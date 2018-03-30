@@ -15,7 +15,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String tables[]={"tbl_student","tbl_admin"};
     // Executing create table command
     private static final String tableCreatorString[] =
-            {"CREATE TABLE tbl_student (studentId INTEGER PRIMARY KEY AUTOINCREMENT ,userName Text," +
+            {"CREATE TABLE tbl_student (studentId Integer PRIMARY KEY AUTOINCREMENT ,userName Text," +
                     "password Text,firstName TEXT, lastName TEXT,address Text,city Text,postalCode Text);",
                     "CREATE TABLE tbl_admin (employeeId INTEGER PRIMARY KEY AUTOINCREMENT ,userName Text," +
                             "password Text,firstName TEXT, lastName TEXT);"};
@@ -47,7 +47,6 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Assigning values of edit text to
-                recordStudents[0]="1";
                 recordStudents[1]=userName.getText().toString();
                 recordStudents[2]=firstName.getText().toString();
                 recordStudents[3]=lastName.getText().toString();

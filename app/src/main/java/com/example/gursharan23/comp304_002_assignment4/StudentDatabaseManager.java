@@ -13,7 +13,7 @@ import java.util.List;
  * Created by gursharan23 on 2018-03-28.
  * Name: Gursharan Singh
  * Description: This class creates the student databases that inherits SQLiteOpenHelper class
- * Version : 0.1 -
+ * Version : 0.2 - Added the checkuserlogin method to authenticate the user
  */
 
 public class StudentDatabaseManager extends SQLiteOpenHelper {
@@ -116,6 +116,28 @@ public class StudentDatabaseManager extends SQLiteOpenHelper {
         return database.update(tableName,values,fields[0]+"=?",new String[]{record[0]});
     }
 
+    public boolean checkUser(String username,String password)
+    {
+        SQLiteDatabase db=this.getWritableDatabase();
+        String Query = "select * from tbl_student where userName='"+ username
+                +"' and password='"+ password+"'";
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery(Query, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(cursor!=null && cursor.getCount()>0){
+            cursor.close();
+            return true;
+        }
+        else{
+            cursor.close();
+            return false;
+        }
+    }
     // Delete a record
     public void deleteRecord(String tableName,String idName,String id)
     {
