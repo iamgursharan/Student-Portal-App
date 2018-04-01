@@ -19,8 +19,8 @@ import java.util.List;
 public class StudentDatabaseManager extends SQLiteOpenHelper {
 
     //private instance variables
-    private static final String Database_Name="StudentPortal.db";
-    private static final int Database_Version=1;
+    private static final String Database_Name="RegisterPortal.db";
+    private static final int Database_Version=14;
     private String tables[];
     private String tableCreatorString[];
 
@@ -40,7 +40,7 @@ public class StudentDatabaseManager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         for (int i=0;i<tables.length;i++)
         {
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+tables[i]);
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS"+" "+tables[i]);
         }
         for (int j=0;j<tables.length;j++)
         {
@@ -66,7 +66,7 @@ public class StudentDatabaseManager extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         for (int k=0; k<tables.length;k++)
         {
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS"+tables[k]);
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS"+" "+tables[k]);
             onCreate(sqLiteDatabase);
         }
     }
@@ -83,9 +83,9 @@ public class StudentDatabaseManager extends SQLiteOpenHelper {
     }
 
     //Read records
-    public List getTable(String tableName)
+    public ArrayList getTable(String tableName)
     {
-        List table=new ArrayList();
+        ArrayList table=new ArrayList();
         // Selecting all rows
         String selectQuery="Select * From "+tableName;
         SQLiteDatabase database=this.getReadableDatabase();
@@ -116,10 +116,32 @@ public class StudentDatabaseManager extends SQLiteOpenHelper {
         return database.update(tableName,values,fields[0]+"=?",new String[]{record[0]});
     }
 
-    public boolean checkUser(String username,String password)
+    public boolean checkStudentUser(String username,String password)
     {
-        SQLiteDatabase db=this.getWritableDatabase();
+        SQLiteDatabase db=this.getReadableDatabase();
         String Query = "select * from tbl_student where userName='"+ username
+                +"' and password='"+ password+"'";
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery(Query, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(cursor!=null && cursor.getCount()>0){
+            cursor.close();
+            return true;
+        }
+        else{
+            cursor.close();
+            return false;
+        }
+    }
+    public boolean checkAdminUser(String username,String password)
+    {
+        SQLiteDatabase db=this.getReadableDatabase();
+        String Query = "select * from tbl_Admin where userName='"+ username
                 +"' and password='"+ password+"'";
         Cursor cursor = null;
 
@@ -144,6 +166,126 @@ public class StudentDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase database=this.getWritableDatabase();
         database.delete(tableName,idName+"= ?",new String[]{id});
         database.close();
+    }
+    public List getProgramsTable()
+    {
+        SQLiteDatabase db=this.getReadableDatabase();
+        String query="select * from tbl_program";
+        Cursor cursor=null;
+        List row=new ArrayList();
+        List table=new ArrayList();
+
+        try
+        {
+            cursor=db.rawQuery(query,null);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        if(cursor.moveToFirst())
+        {
+            do
+                {
+                   for(int i=0;i<cursor.getColumnCount();i++)
+                   {
+                       row.add(cursor.getString(i));
+                   }
+                   table.add(row);
+                }while(cursor.moveToNext());
+        }
+        cursor.close();
+        return table;
+    }
+/*
+    public List getStudentName(String name)
+    {
+        SQLiteDatabase db=this.getReadableDatabase();
+        String query="select * from tbl_student where userName='"+name;
+        Cursor cursor=null;
+        List table=new ArrayList();
+        ArrayList row=new ArrayList();
+        try
+        {
+            cursor=db.rawQuery(query,null);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        if(cursor.moveToFirst())
+        {
+            do
+            {
+                for(int i=0;i<cursor.getColumnCount();i++)
+                {
+                    row.add(cursor.getString(i));
+                }
+                table.add(row);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        return table;
+    }
+
+    public List getProgramName(String name)
+    {
+        SQLiteDatabase db=this.getReadableDatabase();
+        String query="select programCode from tbl_program where programCode='"+name;
+        Cursor cursor=null;
+        List table=new ArrayList();
+        ArrayList row=new ArrayList();
+        try
+        {
+            cursor=db.rawQuery(query,null);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        if(cursor.moveToFirst())
+        {
+            do
+            {
+                for(int i=0;i<cursor.getColumnCount();i++)
+                {
+                    row.add(cursor.getString(i));
+                }
+                table.add(row);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        return table;
+    }
+*/
+    public List getStatus(String name)
+    {
+        SQLiteDatabase db=this.getReadableDatabase();
+        String query="select status from tbl_payment where studentName='"+name;
+        Cursor cursor=null;
+        List table=new ArrayList();
+        ArrayList row=new ArrayList();
+        try
+        {
+            cursor=db.rawQuery(query,null);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        if(cursor.moveToFirst())
+        {
+            do
+            {
+                for(int i=0;i<cursor.getColumnCount();i++)
+                {
+                    row.add(cursor.getString(i));
+                }
+                table.add(row);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        return table;
     }
 }
 
